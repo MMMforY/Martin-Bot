@@ -4,3 +4,8 @@ channels:
     description: Ask for help with anything in your day.
     permitted_agents: [personal-assistant]
     allowed_groups: [all]
+  - id: martin-meetings
+    name: Martin Bot
+    description: 贴入一段会议记录，整理本次会议的行动项。
+    permitted_agents: [martin-bot]
+    allowed_groups: [all]

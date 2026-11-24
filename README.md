@@ -1,3 +1,13 @@
+# Martin Bot
+
+基于 [CopilotKit/OpenBot](https://github.com/CopilotKit/OpenBot) 的中文会议整理 Bot。
+
+**现场演示**　下载本仓库，双击 [showcase/index.html](showcase/index.html)。两组会议样例可直接编辑、核对原文并导出 Markdown。离线演示使用浏览器规则，适合投屏或发给别人试用。[中文使用指南](showcase/guide.html)
+
+**模型版**　在完整检出中按下方 Run from source 配置 Docker、Bun、CopilotKit 连接和模型凭据。启动前运行 `bash scripts/use-personal-edition.sh`，再运行 `bash scripts/start.sh`。打开本地应用，在 Bots 中选择 Martin Bot 并发送会议记录。个人版预设在 [examples/personal](examples/personal)。
+
+## 上游 OpenBot 文档
+
 <div align="center">
 
 <img src="app/src/assets/openbot-logo.png" alt="" width="72">

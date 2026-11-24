@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Martin Bot · 会议工作台</title>
+<style>
+:root{color-scheme:light dark;--bg:#f5f4f0;--card:#fff;--fg:#20221f;--muted:#62665f;--line:#d4d5ce;--soft:#eaece5;--ok:#246a43;--warn:#895600}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1c19;--card:#242724;--fg:#f1f2eb;--muted:#b1b7ab;--line:#444a40;--soft:#31362f;--ok:#93d8a8;--warn:#f3c578}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 "Inter","PingFang SC","Microsoft YaHei",sans-serif}header,footer,.toolbar,.caption{display:flex;align-items:center;justify-content:space-between;gap:12px}main,header,footer{max-width:1280px;margin:auto;padding-inline:clamp(16px,5vw,72px)}header{height:76px;border-bottom:1px solid var(--line)}.brand{font:700 24px/1 Arial;letter-spacing:-1.2px}.logo{background:var(--fg);color:var(--card);padding:5px 8px;margin-right:9px;font:italic bold 21px Georgia}a{color:inherit;text-underline-offset:4px}header a{font-size:14px}.intro{padding:44px 0 32px}.kicker,footer,.caption span{font:12px/1.7 "IBM Plex Mono",monospace;letter-spacing:.06em;color:var(--muted)}h1{font:600 clamp(32px,4.3vw,62px)/1.2 "PingFang SC",sans-serif;letter-spacing:-.05em;margin:9px 0 10px}.intro p,p{margin:0;color:var(--muted)}.grid{display:grid;grid-template-columns:.88fr 1.12fr;align-items:start;gap:18px}section.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:clamp(16px,2.1vw,30px);min-width:0}h2{font-size:21px;margin:0}.caption{margin-bottom:16px}.caption span{font-size:11px;text-align:right}.options{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}button,input,textarea{font:inherit;color:inherit}button{cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:14px}button:hover{background:var(--soft)}button[aria-pressed=true]{border-color:var(--fg);background:var(--soft)}button.primary{color:var(--card);background:var(--fg);border-color:var(--fg);font-weight:600}button:disabled{opacity:.48;cursor:default}textarea{width:100%;resize:vertical;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:16px;min-height:222px;line-height:1.85}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--fg);outline-offset:2px}.toolbar{margin-top:12px;flex-wrap:wrap}.toolbar small{color:var(--muted)}.item{border-top:1px solid var(--line);padding:12px 0}.task{font-size:17px;font-weight:650;margin:0 0 6px;overflow-wrap:anywhere}.row{display:flex;gap:12px;flex-wrap:wrap}.row label{font-size:12px;color:var(--muted)}input{background:var(--soft);border:1px solid transparent;border-radius:4px;padding:3px 6px;width:7em;max-width:100%;margin-left:4px;font-size:13px}input::placeholder{color:var(--warn);opacity:1}details{font-size:12px;color:var(--muted);margin-top:7px;overflow-wrap:anywhere}summary{cursor:pointer}.status{font-size:14px;color:var(--muted);min-height:1.6em;margin-top:9px}footer{padding-block:24px;flex-wrap:wrap}.empty{padding:28px 0} @media(max-width:800px){.grid{grid-template-columns:1fr}.intro{padding:28px 0 20px}.toolbar{align-items:center}header{height:60px}}
+</style>
+<header><b class="brand"><i class="logo" aria-hidden="true">M</i>Martin Bot</b><a href="guide.html">使用指南 ↗</a></header>
+<main><div class="intro"><span class="kicker">MARTIN BOT &nbsp;/&nbsp; MEETING DESK</span><h1>会议行动清单</h1><p>把会后要做的事列出来，逐项核对负责人和期限。</p></div>
+<div class="grid"><section class="panel"><div class="caption"><h2><label for="notes">会议记录</label></h2><span>INPUT</span></div>
+<div class="options" aria-label="载入示例"><button data-sample="0">产品周会</button><button data-sample="1">活动筹备</button></div>
+<textarea id="notes" maxlength="12000" spellcheck="false"></textarea><div class="toolbar"><small>每行一项，最多 12,000 字</small><button class="primary" id="run">整理清单 →</button></div><p class="status" id="feedback" role="status"></p></section>
+<section class="panel"><div class="caption"><h2>行动清单</h2><span id="count"></span></div><div id="tasks"></div><div class="toolbar"><small>点击字段即可修改</small><button id="download">导出 Markdown ↓</button></div></section></div></main>
+<footer><span>Martin Bot · v0.1</span><span>离线规则演示 · 数据仅保留在当前页面</span></footer>
+<script>
+const samples = [
+  '林夏负责整理访谈要点，周五前完成。\n周舟负责更新预约流程原型，下周二前完成。\n待办：确认下一轮测试名单。',
+  '陈晨负责确认现场座位，周三前完成。\n待办：准备签到二维码。\n沈宁负责发出彩排通知，周四前完成。'
+];
+const byId = id => document.getElementById(id);
+const notes = byId('notes');
+let actions = [], processedText, edited = false;
+
+function extract(line) {
+  const source = line.trim();
+  const content = source.replace(/^(?:[-*•]|\d+[、.])\s*/, '').replace(/^待办\s*[：:]\s*/, '').replace(/[。；;]+$/, '');
+  if (!content) return null;
+  const match = content.match(/^([^，。；：:\s]{1,12})负责\s*(.+)$/);
+  const taskAndDate = match ? match[2] : content;
+  const due = taskAndDate.match(/[，,]\s*(.+?)前(?:完成|提交|交付)?$/);
+  return {source, task: due ? taskAndDate.slice(0, due.index) : taskAndDate, owner:match ? match[1] : '', date:due ? due[1] : ''};
+}
+function element(tag, value) {
+  const node = document.createElement(tag);
+  node.textContent = value;
+  return node;
+}
+function field(action, key, title) {
+  const label = element('label', title);
+  const input = document.createElement('input');
+  input.value = action[key];
+  input.placeholder = '待确认';
+  input.setAttribute('aria-label', action.task + ' · ' + title);
+  input.oninput = () => { action[key] = input.value.trim(); edited = true; };
+  label.append(input);
+  return label;
+}
+function organize() {
+  actions = notes.value.split(/\r?\n/).map(extract).filter(Boolean);
+  processedText = notes.value;
+  edited = false;
+  const cards = actions.map(action => {
+    const card = element('article', '');
+    card.className = 'item';
+    const title = element('h3', action.task);
+    title.className = 'task';
+    const row = element('div', '');
+    row.className = 'row';
+    row.append(field(action,'owner','负责人'),field(action,'date','期限'));
+    const detail = element('details','');
+    detail.append(element('summary','查看原文'), element('p',action.source));
+    card.append(title,row,detail);
+    return card;
+  });
+  byId('tasks').replaceChildren(...cards);
+  if (!cards.length) byId('tasks').append(element('p','输入待办记录后，在这里核对清单。'));
+  byId('count').textContent = actions.length + ' 项';
+  byId('download').disabled = !actions.length;
+  byId('feedback').textContent = actions.length ? '已整理，可在右侧核对原文。' : '请先输入至少一项待办。';
+}
+const selectors = [...document.querySelectorAll('[data-sample]')];
+function selectSample(index) {
+  notes.value = samples[index];
+  selectors.forEach((button,i) => button.setAttribute('aria-pressed', String(i === index)));
+  organize();
+}
+selectors.forEach((button,i) => button.onclick = () => {
+  if ((edited || !samples.includes(notes.value)) && !confirm('载入示例会替换当前记录和修改，继续吗？')) return;
+  selectSample(i);
+});
+notes.oninput = () => {
+  selectors.forEach(button => button.setAttribute('aria-pressed','false'));
+  byId('feedback').textContent = '记录已修改，点击“整理清单”更新结果。';
+  byId('download').disabled = true;
+};
+byId('run').onclick = () => {
+  if (edited && !confirm('重新整理会替换手动修改的字段，继续吗？')) return;
+  organize();
+};
+byId('download').onclick = () => {
+  if (notes.value !== processedText || !actions.length) return;
+  const lines = actions.map(a => '- [ ] ' + a.task + '（负责人：' + (a.owner || '待确认') + '，期限：' + (a.date || '待确认') + '）');
+  const url = URL.createObjectURL(new Blob(['# Martin Bot · 会议行动清单\n\n' + lines.join('\n') + '\n'], {type:'text/markdown;charset=utf-8'}));
+  const link = element('a','');
+  link.href = url; link.download = 'Martin-Bot-行动清单.md'; link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+  byId('feedback').textContent = '清单已生成，请查看浏览器下载。';
+};
+selectSample(0);
+</script></html>
