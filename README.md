@@ -1,10 +1,10 @@
 # Martin Bot
 
-基于 [CopilotKit/OpenBot](https://github.com/CopilotKit/OpenBot) 的中文会议整理 Bot。
+基于 [CopilotKit/OpenBot](https://github.com/CopilotKit/OpenBot) 改造的 Agent 工作台。个人版与团队版共用新的 Web 目录，可在当前用户有权查看的 Bot 中按名称、标题或职责搜索，进入详情，或按出场顺序选择多个 Bot 生成离线 HTML 介绍。
 
-**现场演示**　下载本仓库，双击 [showcase/index.html](showcase/index.html)。两组会议样例可直接编辑、核对原文并导出 Markdown。离线演示使用浏览器规则，适合投屏或发给别人试用。[中文使用指南](showcase/guide.html)
+**展示**　下载本仓库并打开 [中文指南](showcase/guide.html) 或 [交互预览](showcase/index.html)。预览使用三条示例资料，与部署版复用展示选择器和导出代码。上台时打开导出的 HTML，用左右方向键翻页。
 
-**模型版**　在完整检出中按下方 Run from source 配置 Docker、Bun、CopilotKit 连接和模型凭据。启动前运行 `bash scripts/use-personal-edition.sh`，再运行 `bash scripts/start.sh`。打开本地应用，在 Bots 中选择 Martin Bot 并发送会议记录。个人版预设在 [examples/personal](examples/personal)。
+**部署**　按下方 Run from source 配置运行环境。请使用本 Fork 的仓库地址：`git clone https://github.com/MMMforY/Martin-Bot.git`。工作区首页和 `/bots` 均提供功能入口。桌面安装包链接指向上游发布版。开发者可在安装依赖后运行 `bun app/scripts/build-martin-preview.ts` 重建离线预览。
 
 ## 上游 OpenBot 文档
 
@@ -197,8 +197,8 @@ From the release after v1.1.2, both charts install a management agent into the n
 Use the template to customize the workspace, branding, Bots, and skills. The source setup below uses [an Intelligence on your own machine](#intelligence-on-your-own-machine) by default; managed Intelligence is the alternative.
 
 ```sh
-git clone https://github.com/CopilotKit/OpenBot.git
-cd OpenBot
+git clone https://github.com/MMMforY/Martin-Bot.git
+cd Martin-Bot
 ```
 
 ### Requirements

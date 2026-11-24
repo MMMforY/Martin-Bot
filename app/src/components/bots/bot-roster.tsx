@@ -1,6 +1,8 @@
 import { IconBolt, IconChevronRight, IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import { matchesBot } from "./presentation";
+import { PresentationPicker } from "./presentation-picker";
 import { Fragment, useState } from "react";
 import { AbstractAvatar } from "@/components/agents/abstract-avatar";
 import {
@@ -47,6 +49,8 @@ import { deploymentCapabilitiesQueryOptions } from "@/lib/deployment/queries";
  * This replaces three screens (Bots, Agents and Team Bots) that listed the same Bots three ways.
  */
 export function BotRoster() {
+  const [query, setQuery] = useState("");
+  const [presenting, setPresenting] = useState(false);
   const personal =
     useQuery(deploymentCapabilitiesQueryOptions()).data?.edition === "personal";
   const agents = useQuery(agentListQueryOptions());
@@ -70,7 +74,9 @@ export function BotRoster() {
     );
   }
   // Every Bot stays in its own section; what it waits on is on the board above, by name.
-  const { pinned, yours, shared } = groupRoster(agents.data);
+  const { pinned, yours, shared } = groupRoster(
+    agents.data.filter((bot) => matchesBot(bot, query)),
+  );
   const available = pinned.length + yours.length + shared.length;
   const hiddenCount = hidden.data?.length ?? 0;
   const newBot = (
@@ -90,6 +96,17 @@ export function BotRoster() {
        * What waits on the person, each thing under the Bot it came from and decided where it is.
        * A Bot waiting on them stays in its own section below too, with its badge.
        */}
+      <div className="mb-6 space-y-3">
+        <Button
+          aria-expanded={presenting}
+          onClick={() => setPresenting(!presenting)}
+          size="sm"
+          variant="outline"
+        >
+          {presenting ? "收起团队展示" : "团队展示"}
+        </Button>
+        {presenting && <PresentationPicker bots={agents.data} />}
+      </div>
       <NeedsYouBoard />
       {/*
        * AVAILABLE BOTS FIRST, AND ONLY SECTIONS WITH BOTS IN THEM. An empty Yours used to sit above
@@ -97,6 +114,16 @@ export function BotRoster() {
        * a Bot they could talk to. The way to make one is a sentence after them instead, beside the
        * page's own New Bot.
        */}
+      <label className="mt-6 block text-sm font-medium">
+        查找工作区中的 Bot
+        <input
+          type="search"
+          className="mt-2 block w-full rounded-md border border-input bg-background px-3 py-2"
+          placeholder="输入名称、标题或职责"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
+      </label>
       {pinned.length ? (
         <PageSection title="Pinned">
           <RosterRows agents={pinned} byId={byId} />
@@ -109,12 +136,16 @@ export function BotRoster() {
       ) : null}
       {shared.length ? (
         <PageSection
-          title={personal ? "Included with OpenBot" : "Shared with you"}
+          title={personal ? "Included with Martin Bot" : "Shared with you"}
         >
           <RosterRows agents={shared} byId={byId} />
         </PageSection>
       ) : null}
-      {available === 0 ? (
+      {available === 0 && query.trim() ? (
+        <p className="mt-4 text-sm" role="status">
+          没有匹配的 Bot，请换个关键词。
+        </p>
+      ) : available === 0 ? (
         // Waits for the hidden list, so it never says "No Bots yet" to someone who hid theirs.
         hidden.isPending ? null : (
           <PageSection>
@@ -129,7 +160,7 @@ export function BotRoster() {
             </PageEmpty>
           </PageSection>
         )
-      ) : yours.length === 0 ? (
+      ) : yours.length === 0 && !query.trim() ? (
         <p className="mt-12 text-muted-foreground text-sm">
           Create a Bot for a specific job.{" "}
           <Link

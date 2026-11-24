@@ -61,7 +61,7 @@ function Home() {
           ) : null}
           <Composer className="w-full max-w-2xl" onSubmit={() => {}} />
           <p className="mt-2 w-full max-w-2xl text-xs text-muted-foreground text-center">
-            OpenBot picks the right Bot. Type @ to choose one.
+            Martin Bot picks the right Bot. Type @ to choose one.
           </p>
         </div>
         <div className="mt-10 w-full max-w-2xl">

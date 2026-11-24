@@ -1,6 +1,6 @@
 import { type Icon, IconLogout, IconMessages } from "@tabler/icons-react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { BrandName } from "@/components/edition/brand-name";
 import { Strip, StripItem } from "@/components/layout/strip";
 import { openNewOrganization } from "@/components/organizations/new-organization-dialog";
@@ -19,7 +19,6 @@ import {
   type NavigationLink,
   useNavigationItems,
 } from "@/lib/navigation";
-import { ORB_PALETTES } from "@/lib/orb-palette";
 import {
   useOrganizationChoices,
   useWaitingInvitationCount,
@@ -41,11 +40,8 @@ import {
 } from "./account-label";
 import { useSignOut } from "./use-sign-out";
 
-/** The orb's palette: periwinkle, the nearest of the eight to OpenBot's own mark. */
-const ORB_COLORS = ORB_PALETTES[2];
-
-/** OpenBot's orb at the top of the strip. It goes home, as the product's name did. */
-function HomeOrb() {
+/** The fork's home link retains the deployment's configured accessible name. */
+function HomeMark() {
   return (
     <Link
       aria-label={appConfig.brand.productName}
@@ -54,16 +50,10 @@ function HomeOrb() {
     >
       <span
         aria-hidden="true"
-        className="bot-orb-still inline-block size-7 rounded-full ring-1 ring-foreground/10"
-        style={
-          {
-            "--c1": ORB_COLORS.c1,
-            "--c2": ORB_COLORS.c2,
-            "--c3": ORB_COLORS.c3,
-            "--c4": ORB_COLORS.c4,
-          } as CSSProperties
-        }
-      />
+        className="grid size-7 place-items-center rounded-md bg-primary text-sm font-bold text-primary-foreground"
+      >
+        M
+      </span>
     </Link>
   );
 }
@@ -214,7 +204,7 @@ function StripAccount() {
 export function SectionStrip() {
   const navigation = useNavigationItems();
   return (
-    <Strip footer={<StripAccount />} header={<HomeOrb />}>
+    <Strip footer={<StripAccount />} header={<HomeMark />}>
       <PanelItem icon={IconMessages} id={CONVERSATIONS} label="Conversations" />
       {navigation
         .filter(isNavigationLink)

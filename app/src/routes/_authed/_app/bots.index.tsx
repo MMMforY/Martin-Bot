@@ -62,7 +62,7 @@ function BotsPage() {
           ? "Your Bots for everyday work."
           : "Manage your Bots and access those shared with you."
       }
-      title="Bots"
+      title="Martin Bot 工作台"
     >
       <BotRoster />
       <WhatYourBotsLearn />

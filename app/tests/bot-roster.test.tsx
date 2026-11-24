@@ -16,6 +16,7 @@ import {
   RouterProvider,
 } from "@tanstack/react-router";
 import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { BotRoster } from "@/components/bots/bot-roster";
 import { type AgentProfile, agentKeys } from "@/lib/agents/queries";
 import type { BotAttention } from "@/lib/bot-lifecycle/queries";
@@ -341,7 +342,7 @@ test("what each Bot waits on is read to the last page, so a Bot on the second st
   expect(requests.filter((line) => line.includes("/api/bots"))).toEqual([]);
 });
 
-test("personal edition labels starter Bots as included with OpenBot", async () => {
+test("personal edition labels starter Bots as included with Martin Bot", async () => {
   queryClient.setQueryData(deploymentKeys.capabilities(), {
     edition: "personal",
   });
@@ -352,7 +353,7 @@ test("personal edition labels starter Bots as included with OpenBot", async () =
   const view = draw();
   await view.findByText("Starter");
   expect(
-    view.getByRole("heading", { name: "Included with OpenBot" }),
+    view.getByRole("heading", { name: "Included with Martin Bot" }),
   ).toBeTruthy();
   expect(view.queryByText("Shared with you")).toBeNull();
 });
@@ -401,7 +402,7 @@ test("personal, with only the included assistant: the assistant comes first and 
   );
   const view = draw();
   const assistant = await view.findByText("Personal Assistant");
-  expect(headings(view)).toEqual(["Included with OpenBot"]);
+  expect(headings(view)).toEqual(["Included with Martin Bot"]);
   expect(view.queryByText("No Bots yet")).toBeNull();
   // The way to make one comes after the Bot that is already there.
   const prompt = view.getByText(/^Create a Bot for a specific job\./);
@@ -414,7 +415,7 @@ test("personal, with only the included assistant: the assistant comes first and 
   );
 });
 
-test("owned and included Bots: Yours, then Included with OpenBot, and no creation prompt", async () => {
+test("owned and included Bots: Yours, then Included with Martin Bot, and no creation prompt", async () => {
   queryClient.setQueryData(deploymentKeys.capabilities(), {
     edition: "personal",
   });
@@ -432,7 +433,7 @@ test("owned and included Bots: Yours, then Included with OpenBot, and no creatio
   );
   const view = draw();
   await view.findByText("Assistant");
-  expect(headings(view)).toEqual(["Yours", "Included with OpenBot"]);
+  expect(headings(view)).toEqual(["Yours", "Included with Martin Bot"]);
   expect(view.queryByText(/^Create a Bot for a specific job\./)).toBeNull();
 });
 
@@ -463,4 +464,25 @@ test("with every Bot hidden it doesn't claim there are none", async () => {
   expect(await view.findByText("No Bots on your list")).toBeTruthy();
   expect(view.queryByText("No Bots yet")).toBeNull();
   expect(view.getByText("Hidden")).toBeTruthy();
+});
+
+test("directory search opens matches and the presentation picker only offers visible Bots", async () => {
+  serving(
+    [
+      bot({ id: "writer", roleDescription: "Draft letters" }),
+      bot({ id: "reader" }),
+    ],
+    [bot({ id: "hidden", hidden: true })],
+  );
+  const view = draw();
+  await view.findByText("writer");
+  await userEvent.type(view.getByLabelText("查找工作区中的 Bot"), "LETTERS");
+  expect(view.queryByText("reader")).toBeNull();
+  expect(view.getByText("writer").closest("a")?.getAttribute("href")).toBe(
+    "/bots/writer",
+  );
+  fireEvent.click(view.getByRole("button", { name: "团队展示" }));
+  expect(view.getAllByRole("checkbox")).toHaveLength(2);
+  fireEvent.click(view.getByRole("checkbox", { name: /writer/ }));
+  expect(view.getByRole("button", { name: "导出展示 HTML（1）" })).toBeTruthy();
 });

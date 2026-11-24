@@ -264,7 +264,12 @@ function RouteComponent() {
   return (
     <>
       <SidebarToggleBar>
-        <BusinessLink />
+        <div className="flex items-center gap-3">
+          <Link to="/bots" className="text-sm font-medium hover:underline">
+            Martin Bot 工作台 · 管理与展示 Bots
+          </Link>
+          <BusinessLink />
+        </div>
       </SidebarToggleBar>
       <div className="flex-1 flex flex-col items-center justify-center w-full p-4 mt-8">
         {/* No product-name label above the greeting: the sidebar already names the product, and a
@@ -344,7 +349,7 @@ function RouteComponent() {
             // Said out loud: a message that silently reaches somebody you did not choose is the
             // kind of surprise that costs trust the first time it happens.
             <p className="mt-2 w-full max-w-2xl text-xs text-muted-foreground text-center">
-              OpenBot picks the right Bot. Type <code>@</code> to choose one.
+              Martin Bot picks the right Bot. Type <code>@</code> to choose one.
             </p>
           ) : null}
           {error ? (

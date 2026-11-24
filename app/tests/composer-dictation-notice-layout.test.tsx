@@ -179,7 +179,7 @@ function regions(page: Page) {
       return { top, bottom, left, right };
     };
     const hint = [...document.querySelectorAll("p")].find((p) =>
-      p.textContent?.startsWith("OpenBot picks the right Bot"),
+      p.textContent?.startsWith("Martin Bot picks the right Bot"),
     );
     return {
       notice: rect(document.querySelector('[role="alert"]')),
