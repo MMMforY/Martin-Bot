@@ -1,24 +1,6 @@
-<!doctype html>
-<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Martin Bot 平台使用指南</title>
-<style>
-:root{color-scheme:light dark}body{font:17px/1.8 Inter,"PingFang SC",system-ui,sans-serif;max-width:760px;margin:0 auto;padding:24px;color:CanvasText;background:Canvas}header{display:flex;justify-content:space-between;border-bottom:1px solid;padding-bottom:12px}header b{font-size:23px}a{color:inherit;text-underline-offset:4px}h1{font-size:clamp(32px,5vw,48px);line-height:1.2;margin:36px 0 12px}h2{margin:28px 0 8px;font-size:22px}li{margin:.4em 0}p{margin:6px 0}pre{overflow:auto;padding:16px;border:1px solid;border-radius:8px;font-size:14px}.link{display:inline-block;padding:7px 16px;background:CanvasText;color:Canvas;border-radius:6px;text-decoration:none;margin-top:12px}
-</style>
-<header><b>Martin Bot</b><span>平台使用指南 · v0.2</span></header>
-<h1>把工作区里的 Bot 展示给别人</h1>
-<p>Martin Bot 是从 OpenBot 改造的 Agent 工作台。可以创建多个 Bot、分配工具权限和发起会话。本版为个人和团队工作区增加了目录搜索与团队展示。</p>
-<a href="index.html" class="link">试用团队展示 →</a>
-<h2>先用一分钟体验</h2>
-<ol><li>打开预览，勾选「客户支持」。搜索“出处”，再勾选「资料研究」。下面的名单按勾选顺序排列。</li><li>点「导出展示 HTML」，打开下载文件。用左右方向键或「下一页」逐一介绍。收件人可以直接打开同一份文件。</li><li>想改出场顺序时，取消勾选后重新选择。导出文件保存的是当时的名称、标题和职责；内容变化后可重新导出。</li></ol>
-<h2>在实际平台里操作</h2>
-<p>进入工作区首页，点击「Martin Bot 工作台 · 管理与展示 Bots」，也可直接进入 <code>/bots</code>。在「查找工作区中的 Bot」输入名称、标题或职责，点击匹配项即可进入原有 Bot 详情。</p>
-<p>点击目录中的「团队展示」展开选择器。这里读取你当前可见的 Bot。选中要给观众看的成员后，导出步骤与预览相同。展示文件只写入选中的名称、标题和职责。</p>
-<h2>运行 Web 平台</h2>
-<p>准备好 Docker、Bun 1.4.3，并按仓库 README 的 Run from source 配置 CopilotKit 连接及模型凭据。首次检出可从以下命令开始。</p>
-<pre>git clone https://github.com/MMMforY/Martin-Bot.git
-cd Martin-Bot
-cp .env.example .env
-bun install</pre>
-<p>团队版使用默认配置。个人版可在启动前运行 <code>bash scripts/use-personal-edition.sh</code>。完成连接配置后运行 <code>bash scripts/start.sh</code>，浏览器打开 <code>http://localhost:3010</code>。</p>
-<p><a href="https://github.com/MMMforY/Martin-Bot#run-from-source">完整部署说明 ↗</a></p>
-</html>
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Martin Bot · 演示指南</title><style>
+body{color:#1b2c21;background:#f4f6f2;font:17px/1.8 Inter,"PingFang SC",system-ui,sans-serif;max-width:760px;margin:auto;padding:24px}header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ccd7cd;padding-bottom:14px}header b{font-size:23px}a{color:inherit}h1{font-size:clamp(32px,6vw,48px);line-height:1.15;margin:35px 0 12px}h2{font-size:22px;margin:28px 0 8px}p{margin:4px 0 14px}ol{background:white;border-radius:12px;padding:16px 24px 16px 45px;border:1px solid #d8e2d6}li{padding:7px 0}.cta{display:inline-block;background:#203b29;color:white;padding:7px 15px;border-radius:6px;text-decoration:none}code{overflow-wrap:anywhere}
+</style><header><b>Martin Bot</b><span>演示指南 · v0.3</span></header><h1>三分钟演示一个 Agent 工作区</h1><p>双击同目录下的 <code>index.html</code>。从总览开始，让观众自己创建成员、分派任务，并决定一次文件操作是否通过。</p><a class="cta" href="index.html">打开工作台 →</a>
+<h2>从分派到交付</h2><ol><li>打开「Bot 目录」，点「新建 Bot」。名称填“发布协调”，职责填“汇总上线检查项”，创建后就能在目录中找到它。</li><li>在新成员卡片上点「分派任务」，保留“生成报告文件”，在素材里逐行写入两条真实想演示的事项，提交任务。</li><li>关闭任务详情，进入「审批收件箱」。打开刚提交的任务，核对原始素材并点「批准生成报告」，再点「下载报告」。打开下载文件，对照刚才输入的内容。</li><li>回到「工作区总览」，看审批数减少、已完成任务数增加。打开「活动记录」，查看创建、提交、审批和导出的顺序。</li></ol>
+<h2>让观众试另一条路径</h2><p>选「仅整理清单」可直接查看编号结果。拒绝文件请求后，可在「任务中心」的「已拒绝」筛选下找到它。打开「团队展示」，按出场顺序勾选 Bot，导出 HTML；用左右方向键翻页即可投屏介绍。</p>
+<h2>演示数据与部署</h2><p>本文件使用浏览器本地数据演示任务生命周期，按行整理素材。无需账号、模型密钥或网络。浏览器允许时会保留修改；下一场演示可点「重置演示」恢复初始数据。</p><p>部署版在工作区首页和 <code>/bots</code> 提供目录搜索及团队展示。真实模型、工具调用和审批由配置好的 OpenBot 后端运行。按仓库的 Run from source 配置 Docker、Bun、CopilotKit 连接和模型凭据后启动。<a href="https://github.com/MMMforY/Martin-Bot#run-from-source">查看平台源码与部署说明 ↗</a></p></html>

@@ -19,7 +19,15 @@ const script = (await out.outputs[0].text()).replace(
 const license = await Bun.file(
   resolve(app, "node_modules/react/LICENSE"),
 ).text();
-const attribution = "<!-- React, React DOM, Scheduler\n" + license + "\n-->";
+const iconLicense = await Bun.file(
+  resolve(app, "node_modules/@tabler/icons-react/LICENSE"),
+).text();
+const attribution =
+  "<!-- React, React DOM, Scheduler\n" +
+  license +
+  "\nTabler Icons\n" +
+  iconLicense +
+  "\n-->";
 await Bun.write(
   resolve(app, "../showcase/index.html"),
   template.replace(

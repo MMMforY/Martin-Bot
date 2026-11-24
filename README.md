@@ -2,7 +2,7 @@
 
 基于 [CopilotKit/OpenBot](https://github.com/CopilotKit/OpenBot) 改造的 Agent 工作台。个人版与团队版共用新的 Web 目录，可在当前用户有权查看的 Bot 中按名称、标题或职责搜索，进入详情，或按出场顺序选择多个 Bot 生成离线 HTML 介绍。
 
-**展示**　下载本仓库并打开 [中文指南](showcase/guide.html) 或 [交互预览](showcase/index.html)。预览使用三条示例资料，与部署版复用展示选择器和导出代码。上台时打开导出的 HTML，用左右方向键翻页。
+**展示**　下载本仓库并打开 [中文指南](showcase/guide.html) 或 [交互预览](showcase/index.html)。离线工作台可创建演示 Bot、分派任务、处理审批、下载报告和查看活动记录，并与部署版复用团队展示选择器。任务执行使用本地示例逻辑。
 
 **部署**　按下方 Run from source 配置运行环境。请使用本 Fork 的仓库地址：`git clone https://github.com/MMMforY/Martin-Bot.git`。工作区首页和 `/bots` 均提供功能入口。桌面安装包链接指向上游发布版。开发者可在安装依赖后运行 `bun app/scripts/build-martin-preview.ts` 重建离线预览。
 
